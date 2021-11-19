@@ -34,6 +34,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.event.ClickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import java.lang.Thread;
 
 @Mod(modid = AnimatedClockMod.MODID, version = AnimatedClockMod.VERSION)
 public class AnimatedClockMod
@@ -157,10 +158,15 @@ public class AnimatedClockMod
 	}
 	
 	@SubscribeEvent
-	public void OnServerConntect(FMLNetworkEvent.ClientConnectedToServerEvent event)
+	public void OnServerConntect(FMLNetworkEvent.ClientConnectedToServerEvent event) throws Exception
 	{
 		Minecraft m1c = Minecraft.getMinecraft();
-		if (m1c.getCurrentServerData() == null) return;
+		while (m1c.thePlayer == null) {
+			//Yes, I'm too lazy to code something proper so I'm busy-waiting, shut up.
+			//It usually waits for less than half a second
+			Thread.sleep(100);
+		}
+		Thread.sleep(3000);
 		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
 		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
 		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
