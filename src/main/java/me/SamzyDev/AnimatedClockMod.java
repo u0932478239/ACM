@@ -22,6 +22,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import java.io.*;
+import java.net.*;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Objects;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import net.minecraft.event.ClickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import java.lang.Thread;
 
 @Mod(modid = AnimatedClockMod.MODID, version = AnimatedClockMod.VERSION)
 public class AnimatedClockMod
@@ -132,7 +145,46 @@ public class AnimatedClockMod
 		KeyBinding.setKeyBindState(key.getKeyCode(), state);
 		KeyBinding.onTick(key.getKeyCode());
 	}
-    
+
+    static JsonElement getJson(String jsonUrl) {
+		try {
+			URL url = new URL(jsonUrl);
+			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Connection", "close");
+			return new JsonParser().parse(new InputStreamReader(conn.getInputStream()));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@SubscribeEvent
+	public void OnServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) throws Exception
+	{
+		Minecraft m1c = Minecraft.getMinecraft();
+		if (m1c.getCurrentServerData() == null) return;
+		if (m1c.getCurrentServerData().serverIP.toLowerCase().contains("hypixel.") == false) return;
+		new Thread(() -> {
+			try {
+				while (m1c.thePlayer == null) {
+					//Yes, I'm too lazy to code something proper so I'm busy-waiting, shut up.
+					//It usually waits for less than half a second
+					Thread.sleep(100);
+				}
+				Thread.sleep(3000);
+		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
+		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
+		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
+			ChatComponentText update = new ChatComponentText(EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "  [UPDATE]  ");
+				update.setChatStyle(update.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/YungSamzy/ACM/releases/latest")));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " +  EnumChatFormatting.DARK_PURPLE + "An update (" + latestVersion + ") is available. ").appendSibling(update));
+		}
+	}catch(Exception e)
+	{
+
+	}
+	}).start();
+	}
+
     @SubscribeEvent
     public void onKey(KeyInputEvent event)
     {
@@ -153,11 +205,9 @@ public class AnimatedClockMod
     				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " + EnumChatFormatting.DARK_PURPLE + "Face North or South to enable clock."));
     				return;
     			}
-    			
     			toggled = true;
     			holdDownKey(attack, true);
     			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " + EnumChatFormatting.DARK_PURPLE + "Clock Enabled."));
-    			
     		}
     		else
     		{
