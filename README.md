@@ -22,7 +22,7 @@
 </div>
 
 <!-- ABOUT THE PROJECT -->
-## Donate  
+<h3 align="center">Donate</h3>
 <p align="center">
-[Donate Here](https://samzy.dev/donate)
+  <a href="https://samzy.dev/donate">Donate Here</a>
 </p>
