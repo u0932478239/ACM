@@ -23,5 +23,6 @@
 
 <!-- ABOUT THE PROJECT -->
 ## Donate  
-
+<p align="center">
 [Donate Here](https://samzy.dev/donate)
+</p>
