@@ -159,6 +159,8 @@ public class AnimatedClockMod
 	@SubscribeEvent
 	public void OnServerConntect(FMLNetworkEvent.ClientConnectedToServerEvent event)
 	{
+		Minecraft m1c = Minecraft.getMinecraft();
+		if (m1c.getCurrentServerData() == null) return;
 		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
 		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
 		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
