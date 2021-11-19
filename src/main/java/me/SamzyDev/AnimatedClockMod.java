@@ -33,6 +33,7 @@ import java.util.Objects;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.event.ClickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 @Mod(modid = AnimatedClockMod.MODID, version = AnimatedClockMod.VERSION)
 public class AnimatedClockMod
@@ -154,6 +155,18 @@ public class AnimatedClockMod
 			return null;
 		}
 	}
+	
+	@SubscribeEvent
+	public void OnServerConntect(FMLNetworkEvent.ClientConnectedToServerEvent event)
+	{
+		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
+		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
+		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
+			ChatComponentText update = new ChatComponentText(EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "  [CLICK HERE TO UPDATE]  ");
+				update.setChatStyle(update.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/YungSamzy/ACM/releases/latest")));
+			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " +  EnumChatFormatting.DARK_PURPLE + "An update (" + latestVersion + ") is available. ").appendSibling(update));
+		}
+	}
 
     @SubscribeEvent
     public void onKey(KeyInputEvent event)
@@ -175,13 +188,6 @@ public class AnimatedClockMod
     				Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " + EnumChatFormatting.DARK_PURPLE + "Face North or South to enable clock."));
     				return;
     			}
-				String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
-				.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
-				if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
-					Minecraft.getMinecraft().thePlayer.addChatMessage(ChatComponentText update = (EnumChatFormatting.GOLD + "Animated Clock: " + EnumChatFormatting.DARK_PURPLE +  //finish here https://github.com/Quantizr/DungeonRoomsMod/blob/ae5411e390a68a18257d4e877b237a2781413e7a/src/main/java/io/github/quantizr/dungeonrooms/DungeonRooms.java
-						"An update (" + latestVersion + ") is available at https://github.com/YungSamzy/ACM/releases/latest"));
-						update.setChatStyle(update.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, releaseURL)));
-				}
     			toggled = true;
     			holdDownKey(attack, true);
     			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " + EnumChatFormatting.DARK_PURPLE + "Clock Enabled."));
