@@ -1,0 +1,16 @@
+[
+{
+  "modid": "animatedclockmod",
+  "name": "Animated Clock Mod",
+  "description": "A sussy mod for animated clocks",
+  "version": "1.0.0",
+  "mcversion": "1.8.9",
+  "url": "https://github.com/YungSamzy/ACM",
+  "updateUrl": "https://github.com/YungSamzy/ACM/releases/latest",
+  "authorList": ["SamzyDev"],
+  "credits": "SamzyDev#1205 for making clocks",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
