@@ -158,15 +158,19 @@ public class AnimatedClockMod
 	}
 	
 	@SubscribeEvent
-	public void OnServerConntect(FMLNetworkEvent.ClientConnectedToServerEvent event) throws Exception
+	public void OnServerConnect(FMLNetworkEvent.ClientConnectedToServerEvent event) throws Exception
 	{
 		Minecraft m1c = Minecraft.getMinecraft();
-		while (m1c.thePlayer == null) {
-			//Yes, I'm too lazy to code something proper so I'm busy-waiting, shut up.
-			//It usually waits for less than half a second
-			Thread.sleep(100);
-		}
-		Thread.sleep(3000);
+		if (m1c.getCurrentServerData() == null) return;
+		if (m1c.getCurrentServerData().serverIP.toLowerCase().contains("hypixel.") == false) return;
+		new Thread(() -> {
+			try {
+				while (m1c.thePlayer == null) {
+					//Yes, I'm too lazy to code something proper so I'm busy-waiting, shut up.
+					//It usually waits for less than half a second
+					Thread.sleep(100);
+				}
+				Thread.sleep(3000);
 		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
 		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
 		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
@@ -174,6 +178,11 @@ public class AnimatedClockMod
 				update.setChatStyle(update.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/YungSamzy/ACM/releases/latest")));
 			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " +  EnumChatFormatting.DARK_PURPLE + "An update (" + latestVersion + ") is available. ").appendSibling(update));
 		}
+	}catch(Exception e)
+	{
+
+	}
+	}).start();
 	}
 
     @SubscribeEvent
