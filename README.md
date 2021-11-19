@@ -24,6 +24,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[Product Name Screen Shot][product-screenshot]](https://github.com/YungSamzy/ACM)
+VIDEO HERE
 
-Watch the tutorial here: []()
+DONATE HERE
