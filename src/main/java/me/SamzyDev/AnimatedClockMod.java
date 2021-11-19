@@ -174,7 +174,7 @@ public class AnimatedClockMod
 		String latestVersion = getJson("https://api.github.com/repos/YungSamzy/ACM/releases")
 		.getAsJsonArray().get(0).getAsJsonObject().get("tag_name").getAsString();
 		if (!Objects.equals(latestVersion, AnimatedClockMod.VERSION)) {
-			ChatComponentText update = new ChatComponentText(EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "  [CLICK HERE TO UPDATE]  ");
+			ChatComponentText update = new ChatComponentText(EnumChatFormatting.GREEN + "" + EnumChatFormatting.BOLD + "  [UPDATE]  ");
 				update.setChatStyle(update.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/YungSamzy/ACM/releases/latest")));
 			Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GOLD + "Animated Clock: " +  EnumChatFormatting.DARK_PURPLE + "An update (" + latestVersion + ") is available. ").appendSibling(update));
 		}
